@@ -20,7 +20,11 @@ new Vue({
           .post('/comment', { comment })
           .then(({ data }) => {
             const mood =
-              data > 0 ? EMOJI.happy : data === 0 ? EMOJI.neutral : EMOJI.sad;
+              data === 'positive'
+                ? EMOJI.happy
+                : data === 'neutral'
+                ? EMOJI.neutral
+                : EMOJI.sad;
 
             this.comments.push({
               comment,
