@@ -1,15 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import * as Sentiment from 'sentiment';
+import {
+  TextAnalyticsClient,
+  AzureKeyCredential,
+} from '@azure/ai-text-analytics';
 
 @Injectable()
 export class CommentService {
-  private readonly _sentimentAnalizer = null;
+  private readonly client = null;
   constructor() {
-    this._sentimentAnalizer = new Sentiment();
+    this.client = new TextAnalyticsClient(
+      process.env.ENDPOINT,
+      new AzureKeyCredential(process.env.TEXT_ANALYTICS_API_KEY),
+    );
   }
-  analizeComment(comment: string) {
-    const { score } = this._sentimentAnalizer.analyze(comment);
 
-    return score;
+  async analizeComment(comment: string) {
+    const [response] = await this.client.analyzeSentiment([comment], 'es');
+    return response.sentiment;
   }
 }
